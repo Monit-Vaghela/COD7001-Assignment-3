@@ -1,0 +1,3 @@
+x = 10;
+
+// Why invalid : Variable used without declaration

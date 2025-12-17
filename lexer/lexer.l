@@ -1,9 +1,12 @@
 %option noyywrap
 
 %{
+#include <stdlib.h>
 #include "parser.tab.h"
 %}
 
 %%
-/* TODO: token rules go here */
+[0-9]+  { yylval = atoi(yytext); return INTEGER; }
+[ \t\n]+ ;
+.        ;
 %%

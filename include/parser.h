@@ -1,5 +1,5 @@
-#ifndef PARSER_INTERFACE_H
-#define PARSER_INTERFACE_H
+#ifndef PARSER_H
+#define PARSER_H
 
 void parser_init(void);
 int  parser_run(void);

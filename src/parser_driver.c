@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "parser_driver.h"
-#include "lexer_interface.h"
-#include "parser_interface.h"
+#include "lexer.h"
+#include "parser.h"
 
 int parse_file(const char *filename) {
     if (lexer_init(filename) != 0) {

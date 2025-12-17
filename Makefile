@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Iinclude
 
-TARGET = parser
+TARGET = myparser
 
 SRC = \
     src/main.c \

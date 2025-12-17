@@ -7,6 +7,10 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    parse_file(argv[1]);
+    if (parse_file(argv[1]) != 0) {
+        fprintf(stderr, "Parsing failed\n");
+        return 1;
+    }
+
     return 0;
 }

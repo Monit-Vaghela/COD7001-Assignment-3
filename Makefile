@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -Iinclude
+CFLAGS = -Wall -Wextra -Iinclude -Iparser
 
 TARGET = myparser
 
@@ -16,16 +16,16 @@ YACC_SRC = parser/parser.y
 
 all: $(TARGET)
 
-$(TARGET): parser.tab.c lex.yy.c $(SRC)
-	$(CC) $(CFLAGS) $(SRC) parser.tab.c lex.yy.c -o $(TARGET)
+$(TARGET): parser/parser.tab.c lex.yy.c $(SRC)
+	$(CC) $(CFLAGS) $(SRC) parser/parser.tab.c lex.yy.c -o $(TARGET)
 
-parser.tab.c parser.tab.h: $(YACC_SRC)
+parser/parser.tab.c parser/parser.tab.h: $(YACC_SRC)
 	bison -d $(YACC_SRC)
 
-lex.yy.c: $(LEX_SRC) parser.tab.h
+lex.yy.c: $(LEX_SRC) parser/parser.tab.h
 	flex $(LEX_SRC)
 
 clean:
-	rm -f $(TARGET) lex.yy.c parser.tab.c parser.tab.h
+	rm -f $(TARGET) lex.yy.c parser/parser.tab.c parser/parser.tab.h
 
 .PHONY: all clean

@@ -20,7 +20,7 @@ $(TARGET): parser/parser.tab.c lex.yy.c $(SRC)
 	$(CC) $(CFLAGS) $(SRC) parser/parser.tab.c lex.yy.c -o $(TARGET)
 
 parser/parser.tab.c parser/parser.tab.h: $(YACC_SRC)
-	bison -d $(YACC_SRC)
+	bison -d -o parser/parser.tab.c $(YACC_SRC)
 
 lex.yy.c: $(LEX_SRC) parser/parser.tab.h
 	flex $(LEX_SRC)

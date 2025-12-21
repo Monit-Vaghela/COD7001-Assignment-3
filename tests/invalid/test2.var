@@ -1,4 +1,2 @@
-var x = 5
-x = x + 1;
-
-// Why invalid : Missing semicolon
+var x = 10
+x = 5;

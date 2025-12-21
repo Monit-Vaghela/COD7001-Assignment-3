@@ -45,12 +45,12 @@ WHITESPACE [ \t\r\n]+
 "}" { return RBRACE; }
 
 {INTEGER} {
-    yylval.intval = atoi(yytext);
+    yylval.ival = atoi(yytext);
     return INTEGER;
 }
 
 {IDENTIFIER} {
-    yylval.strval = strdup(yytext);
+    yylval.sval = strdup(yytext);
     return IDENTIFIER;
 }
 

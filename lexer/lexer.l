@@ -6,6 +6,7 @@
 #include "parser.tab.h"
 
 extern int yylineno;
+extern int lexical_error;
 
 %}
 
@@ -62,6 +63,7 @@ WHITESPACE [ \t\r\n]+
 
 . {
     printf("Lexical error at line %d: unknown character '%s'\n", yylineno, yytext);
+    exit(1);
 }
 
 %%

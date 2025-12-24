@@ -43,6 +43,8 @@ The parser must tokenize input source code, validate it against a formally defin
    - Generate AST nodes during parsing
    - Represent program structure hierarchically
 
+4. **Expression Evaluatiom**
+
 ---
 
 ## Non-Functional Requirements
@@ -55,6 +57,7 @@ The parser must tokenize input source code, validate it against a formally defin
 ---
 
 ## Project Structure
+- The Structure Used is Different than the defined structure in assignment pdf
 ```
 lab-parser/
 ├── include/ # Header files
@@ -70,11 +73,37 @@ lab-parser/
 └── README.md
 ```
 ---
-
-## How to Build
-
+## Cloning the project
+To clone this project, use the following git command:
+```bash
+```bash
+git clone https://github.com/Monit-Vaghela/COD7001-Assignment-3.git
+```
+---
+## Using Makefile
+The Makefile provides a simple interface for building and cleaning the project. The following are common make commands:
+1. **Build the project**
+Run the following command to compile the project files:
 ```bash
 make
-./parser <input-file>
-./scripts/run.sh
 ```
+2. **Clean the project**
+Run the following command to remove any generated files and clean up the project directory:
+```bash
+make clean
+```
+---
+## Running the Script
+To run the script, follow these steps:
+1. Navigate to the directory containing the script:
+```bash
+cd scripts
+```
+2. Run the script with the following command:
+```bash
+./run.sh
+```
+- This creates 2 files 
+1. **valid.txt** - cointains the solution for valid test cases
+2. **invalid.txt** - cointains the solution for invalid test cases
+

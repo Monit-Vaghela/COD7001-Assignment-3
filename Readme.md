@@ -93,7 +93,6 @@ The parser must tokenize input source code, validate it against a formally defin
 ## Cloning the project
 To clone this project, use the following git command:
 ```bash
-```bash
 git clone https://github.com/Monit-Vaghela/COD7001-Assignment-3.git
 ```
 ---

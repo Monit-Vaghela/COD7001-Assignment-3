@@ -1,0 +1,333 @@
+>>> tests/valid/test10.var
+Runtime error: control flow not implemented yet
+BLOCK
+  VAR_DECL(x)
+    INT(10)
+  VAR_DECL(y)
+    INT(20)
+  VAR_DECL(z)
+    INT(30)
+  VAR_DECL(sum)
+    INT(0)
+  VAR_DECL(i)
+    INT(0)
+  WHILE
+    BINOP(<)
+      IDENT(i)
+      INT(10)
+    IF
+      BINOP(E)
+        IDENT(r)
+        INT(3)
+      BLOCK
+        VAR_DECL(s)
+          INT(5)
+        ASSIGN(s)
+          BINOP(*)
+            IDENT(s)
+            INT(2)
+
+
+>>> tests/valid/test1.var
+BLOCK
+  VAR_DECL(x)
+    INT(10)
+  VAR_DECL(y)
+    INT(20)
+  ASSIGN(x)
+    BINOP(+)
+      IDENT(x)
+      IDENT(y)
+  ASSIGN(x)
+    BINOP(-)
+      INT(0)
+      INT(3)
+
+--- Runtime Values ---
+Name: y
+Value: 20
+Scope: 1
+
+Name: x
+Value: -3
+Scope: 1
+
+
+
+>>> tests/valid/test2.var
+BLOCK
+  VAR_DECL(x)
+    INT(5)
+  VAR_DECL(y)
+    INT(5)
+  IF_ELSE
+    BINOP(>)
+      IDENT(x)
+      INT(0)
+    BLOCK
+      VAR_DECL(y)
+        INT(2)
+      ASSIGN(x)
+        BINOP(-)
+          IDENT(x)
+          INT(1)
+      ASSIGN(y)
+        BINOP(-)
+          IDENT(x)
+          INT(1)
+      ASSIGN(x)
+        BINOP(+)
+          IDENT(y)
+          INT(1)
+    BLOCK
+      ASSIGN(x)
+        BINOP(+)
+          IDENT(x)
+          INT(1)
+
+--- Runtime Values ---
+Name: y
+Value: 3
+Scope: 2
+
+Name: y
+Value: 5
+Scope: 1
+
+Name: x
+Value: 4
+Scope: 1
+
+
+
+>>> tests/valid/test3.var
+Runtime error: control flow not implemented yet
+BLOCK
+  VAR_DECL(i)
+    INT(0)
+  VAR_DECL(sum)
+    INT(0)
+  VAR_DECL(limit)
+    INT(10)
+  WHILE
+    BINOP(<)
+      IDENT(i)
+      IDENT(limit)
+    BLOCK
+      IF_ELSE
+        BINOP(E)
+          IDENT(i)
+          INT(0)
+        ASSIGN(i)
+          BINOP(+)
+            IDENT(i)
+            INT(1)
+        BLOCK
+          IF_ELSE
+            BINOP(<)
+              IDENT(i)
+              INT(5)
+            ASSIGN(sum)
+              BINOP(+)
+                IDENT(sum)
+                BINOP(*)
+                  IDENT(i)
+                  INT(2)
+            ASSIGN(sum)
+              BINOP(+)
+                IDENT(sum)
+                BINOP(*)
+                  BINOP(+)
+                    IDENT(i)
+                    INT(1)
+                  BINOP(-)
+                    IDENT(i)
+                    INT(1)
+
+
+>>> tests/valid/test4.var
+BLOCK
+  VAR_DECL(x)
+  ASSIGN(x)
+    BINOP(+)
+      INT(5)
+      BINOP(*)
+        INT(3)
+        INT(2)
+
+--- Runtime Values ---
+Name: x
+Value: 11
+Scope: 1
+
+
+
+>>> tests/valid/test5.var
+BLOCK
+  VAR_DECL(x)
+    INT(10)
+  ASSIGN(x)
+    BINOP(<)
+      IDENT(x)
+      INT(20)
+
+--- Runtime Values ---
+Name: x
+Value: 1
+Scope: 1
+
+
+
+>>> tests/valid/test6.var
+BLOCK
+  VAR_DECL(x)
+    INT(10)
+  IF
+    BINOP(>)
+      IDENT(x)
+      INT(3)
+    ASSIGN(x)
+      BINOP(-)
+        IDENT(x)
+        INT(1)
+
+--- Runtime Values ---
+Name: x
+Value: 9
+Scope: 1
+
+
+
+>>> tests/valid/test7.var
+Runtime error: control flow not implemented yet
+BLOCK
+  BLOCK
+    VAR_DECL(x)
+      INT(2)
+    VAR_DECL(y)
+      INT(1)
+    WHILE
+      BINOP(<)
+        IDENT(x)
+        INT(3)
+      BLOCK
+        IF_ELSE
+          BINOP(E)
+            IDENT(x)
+            INT(1)
+          ASSIGN(x)
+            BINOP(+)
+              IDENT(x)
+              INT(1)
+          ASSIGN(y)
+            BINOP(+)
+              IDENT(y)
+              INT(2)
+
+
+>>> tests/valid/test8.var
+Runtime error: control flow not implemented yet
+BLOCK
+  VAR_DECL(x)
+    INT(10)
+  IF
+    BINOP(>)
+      IDENT(x)
+      INT(0)
+    BLOCK
+      WHILE
+        BINOP(<)
+          IDENT(x)
+          INT(5)
+        BLOCK
+          ASSIGN(x)
+            BINOP(+)
+              IDENT(x)
+              INT(1)
+          IF
+            BINOP(E)
+              IDENT(x)
+              INT(3)
+            ASSIGN(x)
+              BINOP(*)
+                IDENT(x)
+                INT(2)
+
+
+>>> tests/valid/test9.var
+BLOCK
+  VAR_DECL(x)
+    INT(10)
+  VAR_DECL(y)
+    INT(20)
+  VAR_DECL(z)
+    INT(30)
+  VAR_DECL(a)
+    INT(100)
+  VAR_DECL(b)
+    INT(50)
+  IF
+    BINOP(>)
+      IDENT(x)
+      INT(5)
+    IF
+      BINOP(>)
+        IDENT(a)
+        IDENT(b)
+      BLOCK
+        IF
+          BINOP(<)
+            IDENT(b)
+            INT(60)
+          BLOCK
+            IF
+              BINOP(E)
+                IDENT(a)
+                INT(100)
+              BLOCK
+                ASSIGN(a)
+                  BINOP(-)
+                    IDENT(a)
+                    INT(5)
+                IF
+                  BINOP(E)
+                    IDENT(a)
+                    INT(95)
+                  BLOCK
+                    ASSIGN(b)
+                      BINOP(+)
+                        IDENT(b)
+                        INT(5)
+                    IF
+                      BINOP(E)
+                        IDENT(b)
+                        INT(55)
+                      BLOCK
+                        ASSIGN(a)
+                          BINOP(*)
+                            IDENT(a)
+                            INT(2)
+
+--- Runtime Values ---
+Name: b
+Value: 55
+Scope: 1
+
+Name: a
+Value: 190
+Scope: 1
+
+Name: z
+Value: 30
+Scope: 1
+
+Name: y
+Value: 20
+Scope: 1
+
+Name: x
+Value: 10
+Scope: 1
+
+
+

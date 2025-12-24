@@ -1,6 +1,7 @@
 var x = 3;
 
+// this is a comment
+/*this is comement*/
+
 if (x > 1) {
     x = x + 1;
-
-// why invalid : Unmatched braces

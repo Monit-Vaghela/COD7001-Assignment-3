@@ -173,8 +173,6 @@ ast_node *ast_append_statement(ast_node *list, ast_node *stmt)
     return list;
 }
 
-
-
 void ast_print(ast_node *node, int indent)
 {
     if (!node)

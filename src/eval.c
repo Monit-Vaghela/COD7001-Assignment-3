@@ -2,60 +2,66 @@
 #include <stdlib.h>
 #include <string.h>
 #include "eval.h"
+#include "symbol_table.h"
 
 #define MAX_VARS 128
 
-typedef struct {
-    char *name;
-    int value;
-} runtime_var;
-
-static runtime_var vars[MAX_VARS];
+static symbol_t runtime_vars[MAX_VARS];
 static int var_count = 0;
 
-static int lookup_runtime(const char *name)
-{
-    for (int i = 0; i < var_count; i++)
-    {
-        if (strcmp(vars[i].name, name) == 0)
-            return vars[i].value;
-    }
 
-    fprintf(stderr, "Runtime error: variable '%s' not initialized\n", name);
-    exit(1);
-}
+void push_runtime_vars() {
+    /*
+    This function is used to push the variables created at 
+    runtime to a local pointer
+    */
 
-static void update_runtime(const char *name, int value)
-{
-    for (int i = 0; i < var_count; i++)
-    {
-        if (strcmp(vars[i].name, name) == 0)
-        {
-            vars[i].value = value;
-            return;
+    symbol_t *current = get_symbol_table();
+    
+    while (current != NULL) {
+        int curr_scope = get_current_scope();
+        if (current->scope == curr_scope) { 
+            // Only push variables from the current scope
+            // Add variable to the runtime_vars array
+            if (var_count < MAX_VARS) {
+                runtime_vars[var_count].name = strdup(current->name);
+                runtime_vars[var_count].value = current->value;
+                runtime_vars[var_count].scope = current->scope;
+                var_count++;
+            }
+            else {
+                fprintf(stderr, "Error: Runtime variables array is full!\n");
+                exit(1);
+            }
         }
+        current = current->next;
     }
-
-    vars[var_count].name = strdup(name);
-    vars[var_count].value = value;
-    var_count++;
 }
 
-int eval_ast(ast_node *node)
-{
-    if (!node)
-        return 0;
+int eval_ast(ast_node *node) {
+    if (!node) {
+        fprintf(stderr, "Internal error: NULL AST node\n");
+        exit(1);
+    }
 
-    switch (node->type)
-    {
-        case AST_INT:
+    switch (node->type) {
+        case AST_INT:{
+            // printf("INTEGER -> Name %s, Value %d\n", node->name, node->int_value);
             return node->int_value;
+        }
 
-        case AST_IDENT:
-            return lookup_runtime(node->name);
+        case AST_IDENT: {
+            symbol_t *sym = lookup_symbol(node->name);
+            if (!sym)
+            {
+                fprintf(stderr, "Runtime error: variable '%s' not found\n", node->name);
+                exit(1);
+            }
+            // printf("IDENTIFIER-> Name %s, Value %d\n", node->name, node->int_value);
+            return sym->value;
+        }
 
-        case AST_BINOP:
-        {
+        case AST_BINOP: {
             int lhs = eval_ast(node->left);
             int rhs = eval_ast(node->right);
 
@@ -85,31 +91,41 @@ int eval_ast(ast_node *node)
             exit(1);
         }
 
-        case AST_VAR_DECL:
-        {
+        case AST_VAR_DECL: {
             int value = 0;
             if (node->left)
                 value = eval_ast(node->left);
 
-            update_runtime(node->name, value);
+            if (symtab_insert(node->name, value) != 0)
+            {
+                fprintf(stderr, "Runtime error: redeclaration of '%s'\n", node->name);
+                exit(1);
+            }
+            // printf("DECLARATION -> Name %s, Value %d\n", node->name, node->int_value);
             return value;
         }
 
-        case AST_ASSIGN:
-        {
+        case AST_ASSIGN: {
             int value = eval_ast(node->left);
-            update_runtime(node->name, value);
+
+            if (symtab_update(node->name, value) != 0)
+            {
+                fprintf(stderr,
+                        "Runtime error: assignment to undeclared variable '%s'\n",
+                        node->name);
+                exit(1);
+            }
+            
+            // printf("ASSIGN -> Name %s, Value %d\n", node->name, node->int_value);
             return value;
         }
 
-        case AST_BLOCK:
-        {
+        case AST_BLOCK: {
+            enter_scope();
             ast_node *stmt = node->left;
             while (stmt)
             {
                 eval_ast(stmt);
-
-                /* 🚨 STOP if this is a control-flow node */
                 if (stmt->type == AST_IF ||
                     stmt->type == AST_IF_ELSE ||
                     stmt->type == AST_WHILE)
@@ -117,11 +133,14 @@ int eval_ast(ast_node *node)
 
                 stmt = stmt->right;
             }
+            // before exiting this scope we stored every variable
+            // created in this block
+            push_runtime_vars();
+            exit_scope();
             return 0;
         }
 
-        case AST_IF:
-        {
+        case AST_IF: {
             int cond = eval_ast(node->left);
 
             if (cond)
@@ -130,8 +149,7 @@ int eval_ast(ast_node *node)
             return 0;
         }
 
-        case AST_IF_ELSE:
-        {
+        case AST_IF_ELSE: {
             int cond = eval_ast(node->left);
 
             if (cond)
@@ -152,8 +170,7 @@ int eval_ast(ast_node *node)
     }
 }
 
-void eval_print_vars(void)
-{
+void eval_print_vars(void) {
     printf("\n--- Runtime Values ---\n");
 
     if (var_count == 0)
@@ -162,8 +179,13 @@ void eval_print_vars(void)
         return;
     }
 
+    // Print all variables with indentation
     for (int i = 0; i < var_count; i++)
     {
-        printf("%s = %d\n", vars[i].name, vars[i].value);
+        printf("Name: %s\n", runtime_vars[i].name);  // Indented Name
+        printf("Value: %d\n", runtime_vars[i].value);  // Indented Value
+        printf("Scope: %d\n\n", runtime_vars[i].scope);  // Indented Scope
     }
 }
+
+

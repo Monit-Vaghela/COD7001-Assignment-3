@@ -59,18 +59,35 @@ The parser must tokenize input source code, validate it against a formally defin
 ## Project Structure
 - The Structure Used is Different than the defined structure in assignment pdf
 ```
-lab-parser/
 ├── include/ # Header files
+│ ├── ast.h # AST node definitions and interfaces
+│ ├── eval.h # Expression evaluation interface
+│ ├── symbol_table.h # Symbol table interface
+│ └── utils.h # Utility helpers
+│
 ├── src/ # Core source files
-├── lexer/ # Flex specification
-├── parser/ # Bison grammar
-├── tests/
-│ ├── valid/ # Valid test programs
-│ └── invalid/ # Invalid test programs
-├── scripts/
-│ └── run.sh # Test runner script
-├── Makefile
-└── README.md
+│ ├── ast.c # AST construction, traversal, and cleanup
+│ ├── eval.c #  Expression evaluation logic
+│ ├── main.c # Program entry point
+│ └── symbol_table.c # Symbol table implementation with scope handling
+│
+├── lexer/ # Lexical analysis
+│ └── lexer.l # Flex specification for tokenization
+│
+├── parser/ # Syntax analysis
+│ └── parser.y # Bison grammar and semantic actions
+│
+├── tests/ # Test cases
+│ ├── valid/ # Valid input programs
+│ └── invalid/ # Invalid input programs
+│
+├── scripts/ # Helper scripts
+│ ├── run.sh # Script to run test cases
+│ ├── valid.txt # List of valid test files
+│ └── invalid.txt # List of invalid test files
+│
+├── Makefile # Build instructions
+├── README.md # Project documentation
 ```
 ---
 ## Cloning the project

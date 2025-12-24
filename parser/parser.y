@@ -25,7 +25,7 @@ void yyerror(const char *s);
 }
 
 // Keywords
-%token VAR IF ELSE WHILE FOR DO
+%token VAR IF ELSE WHILE
 
 // Identifiers
 %token <sval> IDENTIFIER
@@ -47,8 +47,7 @@ void yyerror(const char *s);
 %type <node> program
 %type <node> stmt stmt_list block
 %type <node> variable_decl assignment
-%type <node> if_stmt while_stmt for_stmt do_while_stmt
-%type <node> for_init for_update
+%type <node> if_stmt while_stmt
 %type <node> expression equality comparison term factor unary primary
 
 %start program
@@ -90,14 +89,6 @@ stmt:
         $$ = $1;
     }
     | while_stmt
-    {
-        $$ = $1;
-    }
-    | for_stmt
-    {
-        $$ = $1;
-    }
-    | do_while_stmt
     {
         $$ = $1;
     }
@@ -199,48 +190,6 @@ while_stmt:
     }
     ;
 
-// For loop
-for_stmt:
-    FOR LPAREN for_init expression for_update RPAREN stmt
-    {
-        $$ = ast_make_for($3, $4, $5, $7);
-    }
-    ;
-
-for_init:
-    variable_decl
-    {
-        $$ = $1;
-    }
-    | assignment
-    {
-        $$ = $1;
-    }
-    | /* empty */
-    {
-        $$ = NULL;
-    }
-    ;
-
-for_update:
-    assignment
-    {
-        $$ = $1;
-    }
-    | /* empty */
-    {
-        $$ = NULL;
-    }
-    ;
-
-// Do while loop
-do_while_stmt:
-    DO stmt WHILE LPAREN expression RPAREN SEMI
-    {
-        $$ = ast_make_do_while($2, $5);
-    }
-    ;
-
 // expression ::= equality ;
 expression:
     equality
@@ -248,7 +197,7 @@ expression:
         $$ = $1;
     }
     ;
-
+    
 /* equality ::= comparison ;
               | equality EQ comparison ;
               | equality NE comparison;

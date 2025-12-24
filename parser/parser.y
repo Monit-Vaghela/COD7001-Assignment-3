@@ -58,7 +58,7 @@ void yyerror(const char *s);
 program:
     stmt_list
     {
-        ast_root = ast_make_block($1);
+        ast_root = ast_make_block($1, yylineno);
     }
     ;
 
@@ -115,7 +115,7 @@ block:
     RBRACE
     {
         exit_scope();
-        $$ = ast_make_block($3);
+        $$ = ast_make_block($3, yylineno);
     } 
     ;
 
@@ -133,7 +133,7 @@ variable_decl:
                     yylineno, $2);
             semantic_error = 1;
         }
-        $$ = ast_make_var_decl($2, NULL);
+        $$ = ast_make_var_decl($2, NULL, yylineno);
     }
 
     // declararation and assignment
@@ -147,7 +147,7 @@ variable_decl:
                     yylineno, $2);
             semantic_error = 1;
         }
-        $$ = ast_make_var_decl($2, $4);
+        $$ = ast_make_var_decl($2, $4, yylineno);
     }
     ;
 
@@ -163,7 +163,7 @@ assignment:
                     yylineno, $1);
             semantic_error = 1;
         }
-        $$ = ast_make_assign($1, $3);
+        $$ = ast_make_assign($1, $3, yylineno);
     }
     ;
 
@@ -172,13 +172,13 @@ if_stmt:
     // IF only
     IF LPAREN expression RPAREN stmt
     {
-        $$ = ast_make_if($3, $5);
+        $$ = ast_make_if($3, $5, yylineno);
     }
 
     // IF with ELSE
     | IF LPAREN expression RPAREN stmt ELSE stmt
     {
-        $$ = ast_make_if_else($3, $5, $7);
+        $$ = ast_make_if_else($3, $5, $7, yylineno);
     }
     ;
 
@@ -186,7 +186,7 @@ if_stmt:
 while_stmt:
     WHILE LPAREN expression RPAREN stmt
     {
-        $$ = ast_make_while($3, $5);
+        $$ = ast_make_while($3, $5, yylineno);
     }
     ;
 
@@ -209,11 +209,11 @@ equality:
     }
     | equality EQ comparison
     {
-        $$ = ast_make_binop('E', $1, $3);
+        $$ = ast_make_binop('E', $1, $3, yylineno);
     }
     | equality NE comparison
     {
-        $$ = ast_make_binop('N', $1, $3);
+        $$ = ast_make_binop('N', $1, $3, yylineno);
     }
     ;
 
@@ -224,19 +224,19 @@ comparison:
     }
     | comparison LT term
     {
-        $$ = ast_make_binop('<', $1, $3);
+        $$ = ast_make_binop('<', $1, $3, yylineno);
     }
     | comparison GT term
     {
-        $$ = ast_make_binop('>', $1, $3);
+        $$ = ast_make_binop('>', $1, $3, yylineno);
     }
     | comparison LE term
     {
-        $$ = ast_make_binop('L', $1, $3); /* <= */
+        $$ = ast_make_binop('L', $1, $3, yylineno); /* <= */
     }
     | comparison GE term
     {
-        $$ = ast_make_binop('G', $1, $3); /* >= */
+        $$ = ast_make_binop('G', $1, $3, yylineno); /* >= */
     }
     ;
 
@@ -247,11 +247,11 @@ term:
     }
     | term PLUS factor
     {
-        $$ = ast_make_binop('+', $1, $3);
+        $$ = ast_make_binop('+', $1, $3, yylineno);
     }
     | term MINUS factor
     {
-        $$ = ast_make_binop('-', $1, $3);
+        $$ = ast_make_binop('-', $1, $3, yylineno);
     }
     ;
 
@@ -262,11 +262,11 @@ factor:
     }
     | factor MUL unary
     {
-        $$ = ast_make_binop('*', $1, $3);
+        $$ = ast_make_binop('*', $1, $3, yylineno);
     }
     | factor DIV unary
     {
-        $$ = ast_make_binop('/', $1, $3);
+        $$ = ast_make_binop('/', $1, $3, yylineno);
     }
     ;
 
@@ -277,7 +277,7 @@ unary:
     }
     | MINUS unary
     {
-        $$ = ast_make_binop('-', ast_make_int(0), $2);
+        $$ = ast_make_binop('-', ast_make_int(0, yylineno), $2, yylineno);
     }
     | primary
     {
@@ -289,7 +289,7 @@ primary:
     // integer Only (Primary)
     INTEGER
     {
-        $$ = ast_make_int($1);
+        $$ = ast_make_int($1, yylineno);
     }
 
     // Identifier only (Primary)
@@ -302,7 +302,7 @@ primary:
                     yylineno, $1);
             semantic_error = 1;
         }
-        $$ = ast_make_ident($1);
+        $$ = ast_make_ident($1, yylineno);
     }
 
     // taking care of opening and closing of

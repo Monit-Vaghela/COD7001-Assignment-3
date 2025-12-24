@@ -4,7 +4,7 @@
 #include "ast.h"
 
 
-static ast_node *ast_create_empty_node(ast_node_type type) {
+static ast_node *ast_create_empty_node(ast_node_type type, int line) {
     /*
     Inputs : Type of ast node
     Output : returns a pointer to the new node created
@@ -27,33 +27,34 @@ static ast_node *ast_create_empty_node(ast_node_type type) {
     node->right = NULL;
     node->extra = NULL;
     node->int_value = 0;
+    node->lineno = line;
     node->name = NULL;
     node->op = 0;
 
     return node;
 }
 
-ast_node *ast_make_int(int value) {
+ast_node *ast_make_int(int value, int line) {
     /*
     Input : The value of the integer
     Output : pointer to the new INT type AST node
     */
-    ast_node *node = ast_create_empty_node(AST_INT);
+    ast_node *node = ast_create_empty_node(AST_INT, line);
     node->int_value = value;
     return node;
 }
 
-ast_node *ast_make_ident(char *name) {
+ast_node *ast_make_ident(char *name, int line) {
     /*
     Input : The name of the identifier
     Output : pointer to the new IDENT type AST node
     */
-    ast_node *node = ast_create_empty_node(AST_IDENT);
+    ast_node *node = ast_create_empty_node(AST_IDENT, line);
     node->name = strdup(name);
     return node;
 }
 
-ast_node *ast_make_binop(char op, ast_node *left, ast_node *right) {
+ast_node *ast_make_binop(char op, ast_node *left, ast_node *right, int line) {
     /*
     Inputs : 
         1) Binary operator which is used in this statement
@@ -61,21 +62,21 @@ ast_node *ast_make_binop(char op, ast_node *left, ast_node *right) {
         3) right AST node
     Output : pointer to the new BINOP type AST node
     */
-    ast_node *node = ast_create_empty_node(AST_BINOP);
+    ast_node *node = ast_create_empty_node(AST_BINOP, line);
     node->op = op;
     node->left = left;
     node->right = right;
     return node;
 }
 
-ast_node *ast_make_assign(char *name, ast_node *expr) {
+ast_node *ast_make_assign(char *name, ast_node *expr, int line) {
     /*
     Inputs : 
         1) name of the variable which this value is being assigned
         2) expression which has been assigned to the variable
     Output : pointer to the new ASSIGN type AST node
     */
-    ast_node *node = ast_create_empty_node(AST_ASSIGN);
+    ast_node *node = ast_create_empty_node(AST_ASSIGN, line);
     node->name = strdup(name);
     // as assign only has a single child we choose the left 
     // child
@@ -83,14 +84,14 @@ ast_node *ast_make_assign(char *name, ast_node *expr) {
     return node;
 }
 
-ast_node *ast_make_var_decl(char *name, ast_node *expr) {
+ast_node *ast_make_var_decl(char *name, ast_node *expr, int line) {
     /*
     Inputs : 
         1) name of the variable which this value is being assigned
         2) expression which has been assigned to the variable
     Output : pointer to the new VAR_DECL type AST node
     */
-    ast_node *node = ast_create_empty_node(AST_VAR_DECL);
+    ast_node *node = ast_create_empty_node(AST_VAR_DECL, line);
     node->name = strdup(name);
 
     // Can be Null
@@ -101,20 +102,20 @@ ast_node *ast_make_var_decl(char *name, ast_node *expr) {
     return node;
 }
 
-ast_node *ast_make_if(ast_node *cond, ast_node *then_block) {
+ast_node *ast_make_if(ast_node *cond, ast_node *then_block, int line) {
     /*
     Inputs : 
         1) Condition for the IF block
         2) Pointer for the child AST i,e the then block (may or may not be NULL)
     Output : pointer to the new if type AST node
     */
-    ast_node *node = ast_create_empty_node(AST_IF);
+    ast_node *node = ast_create_empty_node(AST_IF, line);
     node->left = cond;
     node->right = then_block;
     return node;
 }
 
-ast_node *ast_make_if_else(ast_node *cond, ast_node *then_block, ast_node *else_block) {
+ast_node *ast_make_if_else(ast_node *cond, ast_node *then_block, ast_node *else_block, int line) {
     /*
     Inputs : 
         1) Condition for the IF Block
@@ -122,28 +123,28 @@ ast_node *ast_make_if_else(ast_node *cond, ast_node *then_block, ast_node *else_
         3) Poiner to else block.
     Output : pointer to the new IF_ELSE type AST node
     */
-    ast_node *node = ast_create_empty_node(AST_IF_ELSE);
+    ast_node *node = ast_create_empty_node(AST_IF_ELSE, line);
     node->left = cond;
     node->right = then_block;
     node->extra = else_block;
     return node;
 }
 
-ast_node *ast_make_while(ast_node *cond, ast_node *body) {
+ast_node *ast_make_while(ast_node *cond, ast_node *body, int line) {
     /*
     Inputs : 
         1) Condition for the while
         2) Pointer to the body
     Output : pointer to the new WHILE type AST node
     */
-    ast_node *node = ast_create_empty_node(AST_WHILE);
+    ast_node *node = ast_create_empty_node(AST_WHILE, line);
     node->left = cond;
     node->right = body;
     return node;
 }
 
-ast_node *ast_make_block(ast_node *stmt_list) {
-    ast_node *node = ast_create_empty_node(AST_BLOCK);
+ast_node *ast_make_block(ast_node *stmt_list, int line) {
+    ast_node *node = ast_create_empty_node(AST_BLOCK, line);
     node->left = stmt_list;
     return node;
 }

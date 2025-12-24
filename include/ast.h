@@ -29,26 +29,27 @@ typedef struct ast_node {
     struct ast_node *extra;
 
 
-    int int_value;       
+    int int_value;
+    int lineno;       
     char *name;          
     char op;            
 
 } ast_node;
 
 
-ast_node *ast_make_int(int value);
-ast_node *ast_make_ident(char *name);
-ast_node *ast_make_binop(char op, ast_node *left, ast_node *right);
+ast_node *ast_make_int(int value, int line);
+ast_node *ast_make_ident(char *name, int line);
+ast_node *ast_make_binop(char op, ast_node *left, ast_node *right, int line);
 
-ast_node *ast_make_assign(char *name, ast_node *expr);
-ast_node *ast_make_var_decl(char *name, ast_node *expr);
+ast_node *ast_make_assign(char *name, ast_node *expr, int line);
+ast_node *ast_make_var_decl(char *name, ast_node *expr, int line);
 
-ast_node *ast_make_if(ast_node *cond, ast_node *then_block);
-ast_node *ast_make_if_else(ast_node *cond, ast_node *then_block, ast_node *else_block);
+ast_node *ast_make_if(ast_node *cond, ast_node *then_block, int line);
+ast_node *ast_make_if_else(ast_node *cond, ast_node *then_block, ast_node *else_block, int line);
 
-ast_node *ast_make_while(ast_node *cond, ast_node *body);
+ast_node *ast_make_while(ast_node *cond, ast_node *body, int line);
 
-ast_node *ast_make_block(ast_node *stmt_list);
+ast_node *ast_make_block(ast_node *stmt_list, int line);
 ast_node *ast_append_statement(ast_node *list, ast_node *stmt);
 
 

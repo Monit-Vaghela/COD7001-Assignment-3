@@ -54,7 +54,7 @@ int eval_ast(ast_node *node) {
             symbol_t *sym = lookup_symbol(node->name);
             if (!sym)
             {
-                fprintf(stderr, "Runtime error: variable '%s' not found\n", node->name);
+                fprintf(stderr, "Runtime error: variable '%s' not found at line %d\n", node->name, node->lineno);
                 exit(1);
             }
             // printf("IDENTIFIER-> Name %s, Value %d\n", node->name, node->int_value);
@@ -74,7 +74,7 @@ int eval_ast(ast_node *node) {
                 case '/':
                     if (rhs == 0)
                     {
-                        fprintf(stderr, "Runtime error: division by zero\n");
+                        fprintf(stderr, "Runtime error: division by zero at line %d\n", node->lineno);
                         exit(1);
                     }
                     return lhs / rhs;
@@ -87,7 +87,7 @@ int eval_ast(ast_node *node) {
                 case 'N': return lhs != rhs;
             }
 
-            fprintf(stderr, "Runtime error: unknown operator\n");
+            fprintf(stderr, "Runtime error: unknown operator at line %d\n", node->lineno);
             exit(1);
         }
 
@@ -98,7 +98,7 @@ int eval_ast(ast_node *node) {
 
             if (symtab_insert(node->name, value) != 0)
             {
-                fprintf(stderr, "Runtime error: redeclaration of '%s'\n", node->name);
+                fprintf(stderr, "Runtime error: redeclaration of '%s' at line %d\n", node->name, node->lineno);
                 exit(1);
             }
             // printf("DECLARATION -> Name %s, Value %d\n", node->name, node->int_value);
@@ -110,9 +110,7 @@ int eval_ast(ast_node *node) {
 
             if (symtab_update(node->name, value) != 0)
             {
-                fprintf(stderr,
-                        "Runtime error: assignment to undeclared variable '%s'\n",
-                        node->name);
+                fprintf(stderr, "Runtime error: assignment to undeclared variable '%s' at line %d\n", node->name, node->lineno);
                 exit(1);
             }
             
@@ -165,7 +163,7 @@ int eval_ast(ast_node *node) {
             exit(1);
 
         default:
-            fprintf(stderr, "Runtime error: unknown AST node\n");
+            fprintf(stderr, "Runtime error: unknown AST node at line %d\n", node->lineno);
             exit(1);
     }
 }

@@ -129,43 +129,6 @@ ast_node *ast_make_if_else(ast_node *cond, ast_node *then_block, ast_node *else_
     return node;
 }
 
-ast_node *ast_make_for(ast_node *init, ast_node *cond, ast_node *update, ast_node *body)
-{
-    /*
-    Inputs :
-        1) Initialization statement
-        2) Condition
-        3) Update statement
-        4) Loop body
-    Output : pointer to the new FOR type AST node
-    */
-    ast_node *node = ast_create_empty_node(AST_FOR);
-    node->left = init;
-    node->right = cond;
-
-    // Using extra to hold update and body together
-    ast_node *block = ast_create_empty_node(AST_BLOCK);
-    block->left = update;
-    block->right = body;
-
-    node->extra = block;
-    return node;
-}
-
-ast_node *ast_make_do_while(ast_node *body, ast_node *cond)
-{
-    /*
-    Inputs :
-        1) Body of the do-while loop
-        2) Condition
-    Output : pointer to the new DO_WHILE type AST node
-    */
-    ast_node *node = ast_create_empty_node(AST_DO_WHILE);
-    node->left = body;
-    node->right = cond;
-    return node;
-}
-
 ast_node *ast_make_while(ast_node *cond, ast_node *body) {
     /*
     Inputs : 
@@ -188,18 +151,29 @@ ast_node *ast_make_block(ast_node *stmt_list) {
 ast_node *ast_append_statement(ast_node *list, ast_node *stmt)
 {
     if (!stmt)
-        return list;   /* ignore empty statements */
+        return list;
 
     if (!list)
         return stmt;
 
     ast_node *temp = list;
+
     while (temp->right)
+    {
+        if (temp->type == AST_IF ||
+            temp->type == AST_IF_ELSE ||
+            temp->type == AST_WHILE ||
+            temp->type == AST_BLOCK)
+            break;
+
         temp = temp->right;
+    }
 
     temp->right = stmt;
     return list;
 }
+
+
 
 void ast_print(ast_node *node, int indent)
 {
@@ -246,19 +220,6 @@ void ast_print(ast_node *node, int indent)
             ast_print(node->left, indent + 1);
             ast_print(node->right, indent + 1);
             ast_print(node->extra, indent + 1);
-            break;
-            
-        case AST_FOR:
-            printf("FOR\n");
-            ast_print(node->left, indent + 1);   // init
-            ast_print(node->right, indent + 1);  // condition
-            ast_print(node->extra, indent + 1);  // update + body
-            break;
-
-        case AST_DO_WHILE:
-            printf("DO_WHILE\n");
-            ast_print(node->left, indent + 1);   // body
-            ast_print(node->right, indent + 1);  // condition
             break;
 
         case AST_WHILE:

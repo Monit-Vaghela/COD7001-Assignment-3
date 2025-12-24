@@ -10,8 +10,6 @@ typedef enum {
     AST_IF,
     AST_IF_ELSE,
 
-    AST_FOR,
-    AST_DO_WHILE,
     AST_WHILE,
 
     AST_BINOP,
@@ -46,13 +44,8 @@ ast_node *ast_make_assign(char *name, ast_node *expr);
 ast_node *ast_make_var_decl(char *name, ast_node *expr);
 
 ast_node *ast_make_if(ast_node *cond, ast_node *then_block);
-ast_node *ast_make_if_else(ast_node *cond,
-                           ast_node *then_block,
-                           ast_node *else_block);
+ast_node *ast_make_if_else(ast_node *cond, ast_node *then_block, ast_node *else_block);
 
-            
-ast_node *ast_make_for(ast_node *init, ast_node *cond, ast_node *update, ast_node *body);
-ast_node *ast_make_do_while(ast_node *body, ast_node *cond);
 ast_node *ast_make_while(ast_node *cond, ast_node *body);
 
 ast_node *ast_make_block(ast_node *stmt_list);

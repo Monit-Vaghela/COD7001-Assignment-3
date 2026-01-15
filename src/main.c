@@ -27,6 +27,7 @@ int parser_run(void)
     if (ret == 0 && !semantic_error && !parse_error)
     {
         ast_print(ast_root, 0);
+        symtab_print();
     }
     if (!parse_error && !semantic_error) {
         symtab_cleanup();
